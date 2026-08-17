@@ -1,0 +1,70 @@
+Requirements:
+1- Librarian can issue a book.
+2- Student can return a book.
+3- Student can borrow a book.
+4- Librarian can issue fee.
+5- Student can submit fee.
+6- System will auto calculate panelty on fee.
+7- Student can search for a book.
+8- Students will be managed by the system
+9- librarians will be managed by the system
+
+
+Design:
+1- Entities and data stores
+	1- Librarian
+	2- Student
+	3- Book
+	4- IssuenceRecordsRepo
+	5- IssueRecord
+	6- Fee
+	7- Transaction
+	8- TransactionsRepo
+	9- StudentsRepo
+	10- StudentService
+	11- LibrarianRepo
+	12- LibrarianService
+	13- FeeRepo
+	14- FeeService
+	15- BookRepo
+	16- BookService
+	17- TransactionService
+	18- IssuenceRecordsService
+	19- LibrarianController
+	20- StudentController
+	21- BookController
+	22- IssuenceRecordsController
+	23- FeeController
+	24- TransactionController
+	25- Renderer: Display everything on terminle
+	26- Logger: Static Utility
+	27- App: Runs systems loop
+	28- RoutesToMenuMapper: stores a list of maps. each map having menuName as key and Specific Route as value. like for transaction menu the key will be 'Transaction' and value will be TransactionRoute
+	29- MenuStringRetriever: Takes specific menu name and returns that one, like for Transaction it returns the transaction menu based on key provided. it will have map
+	30- Menu
+	31- MenuRepo
+	32- InputHandler: user input get kerta ha
+	33- Validator: validations is k pass hoti han. specific validations perform kerta ha. we can add more into it.
+	34- Routes: Interface implemented by specific Routes class
+	35- SystemController: For moving to specific page
+	36- Form
+	37- ContextStore
+	
+	(Note: We can also create an interface of menu with 2 virtual functions intitMenu and getMenu. then we can implement Transaction, Student, Book Management, Book Issuence etc menus classes)
+
+
+MainMenu: MainRoutes -> {
+	1: 'Main:student:panel'
+	2: 'Main:book:panel'
+	3: 'Main:librarian:panel'
+}
+StudentMenu: StudentRoutes -> {
+	1: 'Student:signup'
+	2: 'Student:register'
+	2: 'Student:getMyProfile'
+	3: 'Student:updateMe'
+	4: 'Student:deleteMe'
+}
+
+Flow of Student Creation
+App -> LoadAllMenus -> Store them all inside MenuRepo -> getMenu('Menu Name') -> InputHandlerCalled -> takesInput by calling specific function getInputforMainMenu -> calls specific Validator Functions on input based on the menu -> throws specific error if invalid input -> else returns input -> in case of error app catches error and gracefully restart asking input-> else for correct valid input app sends it to the RoutesToMenuMapper and gets a specific route to be hitted -> SystemController will be called as controller.hit(panle route we got) -> this hit function returns specific menu route which is to be opened -> app calls getMenu('Menu Name') -> suppose we selected student i.e 'Main:student:panel' -> again input handler takes input and validator validates based on the menu provided -> the input of this menu is used to get the route which is to be called from RoutesToMenuMapper -> we again get specific route which is tto be called -> System controller again calls hit and this time suppose we hit this route 'Student:signup' -> system controller will have all other controllers composed inside it. the name Student here will tell it the controller to be called and signup will tell it which function of this controller is to be called. on calling it the student controller will return the register form -> system controller us register form ka refernce store ker k form.pull ka function call karay gi. -> ye function input handler ka use ker k details get karay ga. -> details ki array return karay-> system controller register ka function call keray ga usay ye inputs day ga and then success bool wapis say app ko return ker day ga. -> app k pass aik contextStore ka auto obj ho ga jis may wo role signed in ho ga -> us ko null na patay hoau app usay kabhi bhi main menu dikhaye ga hi nahi
